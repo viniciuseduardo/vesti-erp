@@ -1,0 +1,102 @@
+version: '3'
+services:
+  api:
+    image: viniciuseduardorj/php7-nginx-composer
+    command: /bin/bash -c "/etc/nginx/scripts/create_vhost.sh && supervisord -n -c /etc/supervisord.conf"
+    ports:
+      - "8080:8080"
+    networks:
+      vesti-network:
+        aliases:
+          - api
+    volumes:
+      - ./api:/var/www
+    environment:
+      C_FORCE_ROOT: 1
+      NGINX_PORT: 8080
+      NGINX_HOST: api-vesti.localhost api localhost
+      NGINX_ROOT: /var/www
+      NGINX_APP_ROOT: /var/www/public
+      NGINX_LOGNAME: api-vesti-access.log
+      NGINX_ERRLOGNAME: api-vesti-error.log
+  erp:
+    image: viniciuseduardorj/php7-nginx-composer
+    command: /bin/bash -c "/etc/nginx/scripts/create_vhost.sh && supervisord -n -c /etc/supervisord.conf"
+    ports:
+      - "80:8080"
+    networks:
+      vesti-network:
+        aliases:
+          - erp
+    volumes:
+      - ./erp:/var/www
+    environment:
+      C_FORCE_ROOT: 1
+      NGINX_PORT: 8080
+      NGINX_HOST: erp-vesti.localhost erp localhost
+      NGINX_ROOT: /var/www
+      NGINX_APP_ROOT: /var/www/public
+      NGINX_LOGNAME: erp-vesti-access.log
+      NGINX_ERRLOGNAME: erp-vesti-error.log
+  mobile:
+    image: viniciuseduardorj/php7-nginx-composer
+    command: /bin/bash -c "/etc/nginx/scripts/create_vhost.sh && supervisord -n -c /etc/supervisord.conf"
+    ports:
+      - "8081:8081"
+      - "3000:3000"
+    networks:
+      vesti-network:
+        aliases:
+          - mobile
+    volumes:
+      - ./mobile:/var/www
+      - ~/.aws:/root/.aws
+    environment:
+      C_FORCE_ROOT: 1
+      NGINX_PORT: 8081
+      NGINX_HOST: mobile-vesti.localhost mobile localhost
+      NGINX_ROOT: /var/www
+      NGINX_APP_ROOT: /var/www/public
+      NGINX_LOGNAME: mobile-vesti-access.log
+      NGINX_ERRLOGNAME: mobile-vesti-error.log  
+  desktop:
+    image: viniciuseduardorj/php7-nginx-composer
+    command: /bin/bash -c "/etc/nginx/scripts/create_vhost.sh && supervisord -n -c /etc/supervisord.conf"
+    ports:
+      - "8082:8082"
+      - "3001:3001"
+    networks:
+      vesti-network:
+        aliases:
+          - desktop
+    volumes:
+      - ./desktop:/var/www
+      - ~/.aws:/root/.aws
+    environment:
+      C_FORCE_ROOT: 1
+      NGINX_PORT: 8081
+      NGINX_HOST: desktop-vesti.localhost desktop localhost
+      NGINX_ROOT: /var/www
+      NGINX_APP_ROOT: /var/www/public
+      NGINX_LOGNAME: desktop-vesti-access.log
+      NGINX_ERRLOGNAME: desktop-vesti-error.log           
+  db:
+    image: postgres:9.6-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./:/app
+      - vesti-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: erp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 102030
+    networks:
+      vesti-network:
+        aliases:
+          - database
+volumes:
+    vesti-data:
+        driver: "local"
+networks:
+  vesti-network:
