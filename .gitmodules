@@ -1,0 +1,12 @@
+[submodule "mobile"]
+	path = mobile
+	url = git@github.com:walidyacoub/vestiwebmobile.git
+[submodule "erp"]
+	path = erp
+	url = git@github.com:walidyacoub/erp.git
+[submodule "desktop"]
+	path = desktop
+	url = git@github.com:walidyacoub/webdesktop.git
+[submodule "api"]
+	path = api
+	url = git@github.com:wmakdesi/apivesti.git
